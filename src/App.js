@@ -19,15 +19,23 @@ const [songs, setSongs] = useState(data());
 const [currentSong, setCurrentSong] = useState(songs[0]);
 const [isPlaying, setIsPlaying] = useState(false);
 const [libraryStatus, setLibraryStatus] = useState(false);
+const [songVolume, setSongVolume] = useState({currentVolume: 1});
   
 const timeUpdateHandler = (e) => {
 const current = e.target.currentTime;
 const duration = e.target.duration;
   setSongInfo({...songInfo, currentTime: current, duration})
 };
+
+const volumeUpdateHandler = (e) => {
+  const currVolume = e.target.volume;
+setSongVolume({...songVolume, currentVolume: currVolume})
+}
+
 const songEndHandler = async () => {
   let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
     await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+    if(isPlaying) audioRef.current.play();
 }
   return (
     <div className="App">
@@ -43,6 +51,8 @@ const songEndHandler = async () => {
       songs={songs}
       setSongs={setSongs}
       setCurrentSong={setCurrentSong}
+      songVolume={songVolume}
+      setSongVolume={setSongVolume}
       />
     <Library 
       songs={songs}
@@ -59,6 +69,7 @@ const songEndHandler = async () => {
       ref={audioRef} 
       src={currentSong.audio}
       onEnded={songEndHandler}
+      onVolumeChange={volumeUpdateHandler}
       >
       </audio>
     </div>

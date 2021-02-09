@@ -18,6 +18,18 @@
     }
 }
 
+.volume{
+    width: 10%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    input{
+        width: 100%;
+        padding: 1rem 0rem;
+    } 
+}
+
 .play-control{
     display: flex;
     justify-content: space-between;

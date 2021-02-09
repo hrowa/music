@@ -1,9 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faPlay, faPause, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons"
+import {faPlay, faPause, faAngleLeft, faAngleRight, faVolumeMute, faVolumeUp} from "@fortawesome/free-solid-svg-icons"
 
 const Player = ({ currentSong, setCurrentSong, isPlaying, 
-    setIsPlaying, audioRef, songInfo, setSongInfo, songs, song, setSongs }) => {
+                setIsPlaying, audioRef, songInfo, setSongInfo, 
+                songs, setSongs, songVolume, setSongVolume }) => 
+                {
+
+//state
+const [isClicked, setIsClicked] = useState(true);
+
 //Event Handlers
 const playSongHandler = () => {
     if (isPlaying) {
@@ -14,6 +20,19 @@ const playSongHandler = () => {
         setIsPlaying(!isPlaying);
     }
 };
+
+const muteHandler = () => {
+    if(isClicked) {
+        setSongVolume(audioRef.current.volume = 0);
+        setIsClicked(isClicked ? false : true);
+        } else {
+        setSongVolume(audioRef.current.volume = 1);  
+        setIsClicked(isClicked ? false : true);  
+        }
+    console.log(audioRef.current.volume)
+   }
+
+
 
 const getTime = (time) => {
     return(
@@ -42,7 +61,12 @@ useEffect(() => {
 const dragHandler = (e) => {
     audioRef.current.currentTime = e.target.value;
     setSongInfo({...songInfo, currentTime: e.target.value});
-}
+    }
+const volumeHandler = (e) => {
+    audioRef.current.volume = e.target.value;
+    setSongVolume({...songVolume, currVolume: e.target.value})
+    console.log(audioRef.current.volume)
+    }
 
 const skipTrackHandler = async (direction) => {
     let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
@@ -71,6 +95,18 @@ return(
                 onChange={dragHandler}
                 type="range"/>
             <p>{getTime(songInfo.duration)}</p>
+        </div>
+        <div className="volume">
+            <FontAwesomeIcon onClick={muteHandler}
+            className="volume"
+            icon={isClicked ? faVolumeUp : faVolumeMute} />
+        <input min={0} 
+            max={1}
+            step="0.01"
+            value={songVolume.currVolume || ''} 
+            onChange={volumeHandler} 
+            type="range" 
+        />
         </div>
         <div className="play-control">
             <FontAwesomeIcon
